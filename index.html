@@ -52,6 +52,7 @@
     <select id="unit">
       <option value="kbps">Kbps</option>
       <option value="mbps" selected>Mbps</option>
+      <option value="gbps">Gbps</option>
     </select>
 
     <button type="submit">Hitung Waktu</button>
@@ -75,18 +76,33 @@
       // Konversi file size ke megabit
       const fileSizeMegabit = fileSizeGB * 1024 * 8;
 
-      // Konversi kecepatan ke Mbps jika perlu
-      const speedMbps = unit === 'kbps' ? speed / 1000 : speed;
+      // Konversi kecepatan ke Mbps
+      let speedMbps;
+      if (unit === 'kbps') {
+        speedMbps = speed / 1000;
+      } else if (unit === 'gbps') {
+        speedMbps = speed * 1000;
+      } else {
+        speedMbps = speed;
+      }
 
       // Hitung waktu dalam detik
       const seconds = fileSizeMegabit / speedMbps;
 
-      const hours = Math.floor(seconds / 3600);
+      const days = Math.floor(seconds / 86400);
+      const hours = Math.floor((seconds % 86400) / 3600);
       const minutes = Math.floor((seconds % 3600) / 60);
       const secs = Math.floor(seconds % 60);
 
-      document.getElementById('result').textContent =
-        `Estimasi waktu download: ${hours} jam ${minutes} menit ${secs} detik.`;
+      let timeText = '';
+
+      if (days > 0) {
+        timeText = `${days} hari ${hours} jam ${minutes} menit ${secs} detik`;
+      } else {
+        timeText = `${hours} jam ${minutes} menit ${secs} detik`;
+      }
+
+      document.getElementById('result').textContent = `Estimasi waktu download: ${timeText}.`;
     });
   </script>
 
