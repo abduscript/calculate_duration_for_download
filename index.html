@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kalkulator Waktu Download</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 400px;
+      margin: 50px auto;
+      padding: 20px;
+      border-radius: 8px;
+      background: #f7f7f7;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    label, select, input {
+      display: block;
+      margin-top: 10px;
+      width: 100%;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      background-color: #0077cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Kalkulator Waktu Download</h2>
+
+  <form id="downloadForm">
+    <label for="fileSize">Ukuran File (GB):</label>
+    <input type="number" id="fileSize" required min="0" step="any" />
+
+    <label for="speed">Kecepatan Download:</label>
+    <input type="number" id="speed" required min="0" step="any" />
+
+    <label for="unit">Satuan Kecepatan:</label>
+    <select id="unit">
+      <option value="kbps">Kbps</option>
+      <option value="mbps" selected>Mbps</option>
+    </select>
+
+    <button type="submit">Hitung Waktu</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    document.getElementById('downloadForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const fileSizeGB = parseFloat(document.getElementById('fileSize').value);
+      const speed = parseFloat(document.getElementById('speed').value);
+      const unit = document.getElementById('unit').value;
+
+      if (isNaN(fileSizeGB) || isNaN(speed) || speed <= 0 || fileSizeGB <= 0) {
+        document.getElementById('result').textContent = 'Mohon masukkan nilai yang valid.';
+        return;
+      }
+
+      // Konversi file size ke megabit
+      const fileSizeMegabit = fileSizeGB * 1024 * 8;
+
+      // Konversi kecepatan ke Mbps jika perlu
+      const speedMbps = unit === 'kbps' ? speed / 1000 : speed;
+
+      // Hitung waktu dalam detik
+      const seconds = fileSizeMegabit / speedMbps;
+
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const secs = Math.floor(seconds % 60);
+
+      document.getElementById('result').textContent =
+        `Estimasi waktu download: ${hours} jam ${minutes} menit ${secs} detik.`;
+    });
+  </script>
+
+</body>
+</html>
